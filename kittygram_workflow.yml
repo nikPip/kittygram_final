@@ -1,4 +1,4 @@
-name: Kittygram workflow
+name: Main Taski workflow
 
 on:
   push:
@@ -13,9 +13,9 @@ jobs:
       postgres:
         image: postgres:13.10
         env:
-          POSTGRES_USER: kittygram_user
-          POSTGRES_PASSWORD: kittygram_password
-          POSTGRES_DB: kittygram
+          POSTGRES_USER: django_user
+          POSTGRES_PASSWORD: django_password
+          POSTGRES_DB: django_db
         ports:
           - 5432:5432
         options: >-
@@ -40,9 +40,11 @@ jobs:
 
       - name: Test with flake8 and django tests
         env:
-          POSTGRES_USER: kittygram_user
-          POSTGRES_PASSWORD: kittygram_password
-          POSTGRES_DB: kittygram
+          POSTGRES_USER: django_user
+          POSTGRES_PASSWORD: django_password
+          POSTGRES_DB: django_db
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
         run: |
           python -m flake8 backend/
           cd backend/
@@ -136,7 +138,7 @@ jobs:
       - name: Push to DockerHub
         uses: docker/build-push-action@v4
         with:
-          context: ./nginx/
+          context: ./gateway/
           push: true
           # Тут вместо username должен быть ваш логин на Docker Hub
           tags: nik4el/kittygram_gateway:latest
@@ -173,12 +175,13 @@ jobs:
           # с которым установлено соединение
           
           script: |
-            cd kittygram
+            cd taski
             sudo docker compose -f docker-compose.production.yml pull
             sudo docker compose -f docker-compose.production.yml down
             sudo docker compose -f docker-compose.production.yml up -d
             sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
-            sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic --noinput
+            sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
+
 
   
   send_message:
