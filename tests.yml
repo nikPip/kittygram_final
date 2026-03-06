@@ -1,4 +1,4 @@
 repo_owner: nikPip
-taski_domain: https://nikkitty.ddns.net:8000
-kittygram_domain: https://nikkitty.ddns.net:9000
+taski_domain: https://nikkitty.ddns.net
+kittygram_domain: https://nikkitty.duckdns.org
 dockerhub_username: nik4el
