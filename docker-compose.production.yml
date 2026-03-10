@@ -7,12 +7,14 @@ services:
   db:
     image: postgres:13.10
     env_file: .env
+    restart: always
     volumes:
       - pg_data:/var/lib/postgresql/data
 
   backend:
     image: nik4el/kittygram_backend:latest
     env_file: .env
+    restart: always
     depends_on:
       - db
     volumes:
@@ -22,14 +24,17 @@ services:
   frontend:
     image: nik4el/kittygram_frontend:latest
     env_file: .env
+    restart: always
     volumes:
       - static:/frontend_static
     command: cp -r /app/build/. /frontend_static/
 
   gateway:
     image: nik4el/kittygram_gateway:latest
+    restart: always
     depends_on:
       - backend
+      - frontend
     volumes:
       - static:/staticfiles
       - media:/media
